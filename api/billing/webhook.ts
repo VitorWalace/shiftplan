@@ -1,5 +1,12 @@
+import { timingSafeEqual } from 'node:crypto'
 import { supabaseAdmin } from '../_lib/supabaseAdmin.js'
 import type { ApiRequest, ApiResponse } from '../_lib/types.js'
+
+function safeEqual(a: string, b: string): boolean {
+  const bufA = Buffer.from(a)
+  const bufB = Buffer.from(b)
+  return bufA.length === bufB.length && timingSafeEqual(bufA, bufB)
+}
 
 interface AsaasWebhookBody {
   event: string
@@ -36,7 +43,8 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
   // Asaas sends back the access token configured for this webhook URL in
   // their dashboard, in this header — that's how we know the request is genuine.
   const token = req.headers['asaas-access-token']
-  if (!process.env.ASAAS_WEBHOOK_TOKEN || token !== process.env.ASAAS_WEBHOOK_TOKEN) {
+  const expectedToken = process.env.ASAAS_WEBHOOK_TOKEN
+  if (!expectedToken || typeof token !== 'string' || !safeEqual(token, expectedToken)) {
     res.status(401).json({ error: 'Token inválido' })
     return
   }
