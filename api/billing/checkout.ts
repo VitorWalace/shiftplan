@@ -9,24 +9,39 @@ interface SubscriptionRow {
   asaas_customer_id: string | null
 }
 
+class MissingCpfCnpjError extends Error {}
+
 export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' })
     return
   }
 
-  const user = await requireUser(req)
-  if (!user) {
+  const requestUser = await requireUser(req)
+  if (!requestUser) {
     res.status(401).json({ error: 'Não autenticado' })
     return
   }
+  const user = requestUser
 
   const body = req.body as { cpfCnpj?: string } | undefined
   const cpfCnpj = body?.cpfCnpj?.replace(/\D/g, '')
 
-  try {
-    const provider = new AsaasProvider()
+  const provider = new AsaasProvider()
 
+  async function createCustomer(): Promise<string> {
+    if (!cpfCnpj || (cpfCnpj.length !== 11 && cpfCnpj.length !== 14)) {
+      throw new MissingCpfCnpjError('Informe um CPF ou CNPJ válido para gerar a cobrança.')
+    }
+    const customer = await provider.createCustomer({
+      name: user.email ?? 'Cliente ShiftPlan',
+      email: user.email ?? '',
+      cpfCnpj,
+    })
+    return customer.customerId
+  }
+
+  try {
     const { data: existing } = await supabaseAdmin
       .from('subscriptions')
       .select('asaas_customer_id')
@@ -34,26 +49,30 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
       .maybeSingle()
 
     let customerId = (existing as SubscriptionRow | null)?.asaas_customer_id ?? undefined
-
     if (!customerId) {
-      if (!cpfCnpj || (cpfCnpj.length !== 11 && cpfCnpj.length !== 14)) {
-        res.status(400).json({ error: 'Informe um CPF ou CNPJ válido para gerar a cobrança.' })
-        return
-      }
-
-      const customer = await provider.createCustomer({
-        name: user.email ?? 'Cliente ShiftPlan',
-        email: user.email ?? '',
-        cpfCnpj,
-      })
-      customerId = customer.customerId
+      customerId = await createCustomer()
     }
 
-    const subscription = await provider.createSubscription({
-      customerId,
-      value: PRO_PLAN_PRICE,
-      description: 'ShiftPlan - Plano Pro (mensal)',
-    })
+    let subscription
+    try {
+      subscription = await provider.createSubscription({
+        customerId,
+        value: PRO_PLAN_PRICE,
+        description: 'ShiftPlan - Plano Pro (mensal)',
+      })
+    } catch (error) {
+      // The stored customer may no longer exist on Asaas's side (e.g. removed
+      // while testing in sandbox) — create a fresh one and retry once.
+      const message = error instanceof Error ? error.message : ''
+      if (!message.includes('cliente removido')) throw error
+
+      customerId = await createCustomer()
+      subscription = await provider.createSubscription({
+        customerId,
+        value: PRO_PLAN_PRICE,
+        description: 'ShiftPlan - Plano Pro (mensal)',
+      })
+    }
 
     await supabaseAdmin
       .from('subscriptions')
@@ -67,6 +86,10 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
 
     res.status(200).json({ pix: subscription.pixCharge ?? null })
   } catch (error) {
+    if (error instanceof MissingCpfCnpjError) {
+      res.status(400).json({ error: error.message })
+      return
+    }
     res.status(502).json({ error: error instanceof Error ? error.message : 'Erro ao iniciar cobrança' })
   }
 }
