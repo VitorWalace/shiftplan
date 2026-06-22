@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { buttonDangerClass, buttonPrimaryClass, buttonSecondaryClass, cardClass } from '../../../components/ui/styles'
+import { PageHeading } from '../../../components/ui/PageHeading'
+import { UsersIcon } from '../../../components/ui/icons'
 import { getErrorMessage } from '../../../lib/errors'
 import { UpgradeModal } from '../../billing/components/UpgradeModal'
 import { usePlan } from '../../billing/usePlan'
@@ -39,7 +41,7 @@ export function EmployeesPage() {
     <div className="flex flex-col gap-6 lg:flex-row">
       <div className="flex-1">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold text-muted-900">Equipe</h1>
+          <PageHeading icon={UsersIcon} title="Equipe" />
           {formState.mode === 'closed' && (
             <button
               type="button"

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { buttonDangerClass, buttonPrimaryClass, buttonSecondaryClass, cardClass } from '../../../components/ui/styles'
+import { PageHeading } from '../../../components/ui/PageHeading'
+import { ClockIcon } from '../../../components/ui/icons'
 import { DAY_OPTIONS } from '../../schedule/periods'
 import type { Shift } from '../../schedule/types'
 import { ShiftForm } from '../components/ShiftForm'
@@ -31,7 +33,7 @@ export function SettingsPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-muted-900">Configurações</h1>
+          <PageHeading icon={ClockIcon} title="Configurações" />
           <p className="mt-1 text-sm text-muted-500">Defina os turnos padrão da semana e o mínimo de pessoas por turno.</p>
         </div>
         {formState.mode === 'closed' && (

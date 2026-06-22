@@ -3,6 +3,8 @@ import { DndContext, type DragEndEvent } from '@dnd-kit/core'
 import { Link } from 'react-router-dom'
 import { ToastViewport, useToast } from '../../../components/ui/Toast'
 import { getErrorMessage } from '../../../lib/errors'
+import { PageHeading } from '../../../components/ui/PageHeading'
+import { CalendarIcon } from '../../../components/ui/icons'
 import { useAvailabilities, useEmployees } from '../../employees/hooks'
 import { useShifts } from '../../settings/hooks'
 import { usePlan } from '../../billing/usePlan'
@@ -107,7 +109,9 @@ export function SchedulePage() {
   if (employees.length === 0 || shifts.length === 0) {
     return (
       <div>
-        <h1 className="mb-4 text-xl font-semibold text-muted-900">Escala</h1>
+        <div className="mb-4">
+          <PageHeading icon={CalendarIcon} title="Escala" />
+        </div>
         <OnboardingChecklist hasEmployees={employees.length > 0} hasShifts={shifts.length > 0} hasAssignments={false} />
       </div>
     )
@@ -117,7 +121,7 @@ export function SchedulePage() {
     const isPlanLimit = (getErrorMessage(scheduleQuery.error) ?? '').includes('plano Free')
     return (
       <div>
-        <h1 className="text-xl font-semibold text-muted-900">Escala</h1>
+        <PageHeading icon={CalendarIcon} title="Escala" />
         <p className="mt-2 text-sm text-danger-600">
           {isPlanLimit
             ? 'O plano Free permite apenas 1 escala ativa. Faça upgrade para o plano Pro e tenha histórico de escalas.'
@@ -139,6 +143,8 @@ export function SchedulePage() {
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-4">
+        <PageHeading icon={CalendarIcon} title="Escala" />
+
         <OnboardingChecklist hasEmployees hasShifts hasAssignments={assignments.length > 0} />
 
         <WeekNavigator

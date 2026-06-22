@@ -9,7 +9,9 @@
       "Bash(curl -s -i -X POST https://shiftplan-equl.vercel.app/api/billing/webhook -H 'asaas-access-token: token-errado-de-teste' -H 'Content-Type: application/json' -d '{\"event\":\"PAYMENT_CONFIRMED\"}')",
       "Bash(npm run *)",
       "Bash(netstat -ano)",
-      "Bash(taskkill *)"
+      "Bash(taskkill *)",
+      "Bash(curl -s https://shiftplan-equl.vercel.app/)",
+      "Bash(curl -s -o /dev/null -w \"favicon: %{http_code}\\\\n\" https://shiftplan-equl.vercel.app/favicon.svg)"
     ]
   }
 }

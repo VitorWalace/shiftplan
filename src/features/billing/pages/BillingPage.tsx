@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { buttonPrimaryClass, buttonSecondaryClass, cardClass, inputClass, labelClass } from '../../../components/ui/styles'
+import { PageHeading } from '../../../components/ui/PageHeading'
+import { CreditCardIcon } from '../../../components/ui/icons'
 import { useStartProCheckout, useSubscription } from '../hooks'
 
 const STATUS_LABELS_PT: Record<string, string> = {
@@ -22,11 +24,20 @@ export function BillingPage() {
 
   return (
     <div className="max-w-lg">
-      <h1 className="text-xl font-semibold text-muted-900">Assinatura</h1>
+      <PageHeading icon={CreditCardIcon} title="Assinatura" />
 
       <div className={`${cardClass} mt-4`}>
         <p className="text-sm text-muted-500">Plano atual</p>
-        <p className="text-lg font-semibold text-muted-900">{isPro ? 'Pro' : 'Free'}</p>
+        <p className="mt-1 flex items-center gap-2">
+          <span
+            className={[
+              'rounded-full px-2.5 py-0.5 text-sm font-semibold',
+              isPro ? 'bg-primary-100 text-primary-700' : 'bg-muted-100 text-muted-700',
+            ].join(' ')}
+          >
+            {isPro ? 'Pro' : 'Free'}
+          </span>
+        </p>
         {subscription && (
           <p className="mt-1 text-sm text-muted-500">
             Status: {STATUS_LABELS_PT[subscription.status] ?? subscription.status}
