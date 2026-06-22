@@ -4,7 +4,12 @@
       "Bash(npm create *)",
       "Bash(npm install *)",
       "Bash(npm ls *)",
-      "Bash(cd *)"
+      "Bash(cd *)",
+      "Bash(curl -s -i -X POST https://shiftplan-equl.vercel.app/api/billing/webhook -H 'asaas-access-token: 7b820ee7379346e391992d5df4a11f2ef573d02a99b0a115' -H 'Content-Type: application/json' -d '{\"event\":\"PAYMENT_CONFIRMED\",\"payment\":{\"subscription\":\"sub_teste_pos_hardening\"}}')",
+      "Bash(curl -s -i -X POST https://shiftplan-equl.vercel.app/api/billing/webhook -H 'asaas-access-token: token-errado-de-teste' -H 'Content-Type: application/json' -d '{\"event\":\"PAYMENT_CONFIRMED\"}')",
+      "Bash(npm run *)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill *)"
     ]
   }
 }

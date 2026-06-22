@@ -15,9 +15,7 @@ export function MobileTabBar() {
             ].join(' ')
           }
         >
-          <span aria-hidden="true" className="text-base leading-none">
-            {item.icon}
-          </span>
+          <item.icon className="h-5 w-5" />
           {item.label}
         </NavLink>
       ))}

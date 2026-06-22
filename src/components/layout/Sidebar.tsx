@@ -14,13 +14,14 @@ export function Sidebar() {
             to={item.to}
             className={({ isActive }) =>
               [
-                'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                'flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 isActive
                   ? 'bg-primary-50 text-primary-700'
                   : 'text-muted-600 hover:bg-muted-100 hover:text-muted-900',
               ].join(' ')
             }
           >
+            <item.icon className="h-5 w-5 shrink-0" />
             {item.label}
           </NavLink>
         ))}
