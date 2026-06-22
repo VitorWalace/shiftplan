@@ -61,10 +61,12 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
         description: 'ShiftPlan - Plano Pro (mensal)',
       })
     } catch (error) {
-      // The stored customer may no longer exist on Asaas's side (e.g. removed
-      // while testing in sandbox) — create a fresh one and retry once.
+      // The stored customer may no longer be valid on Asaas's side — either
+      // explicitly removed, or referencing an id Asaas no longer recognizes.
+      // Create a fresh one and retry once.
       const message = error instanceof Error ? error.message : ''
-      if (!message.includes('cliente removido')) throw error
+      const isStaleCustomer = message.includes('cliente removido') || message.includes('invalid_customer')
+      if (!isStaleCustomer) throw error
 
       customerId = await createCustomer()
       subscription = await provider.createSubscription({
