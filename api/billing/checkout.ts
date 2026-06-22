@@ -21,6 +21,9 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     return
   }
 
+  const body = req.body as { cpfCnpj?: string } | undefined
+  const cpfCnpj = body?.cpfCnpj?.replace(/\D/g, '')
+
   try {
     const provider = new AsaasProvider()
 
@@ -33,9 +36,15 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     let customerId = (existing as SubscriptionRow | null)?.asaas_customer_id ?? undefined
 
     if (!customerId) {
+      if (!cpfCnpj || (cpfCnpj.length !== 11 && cpfCnpj.length !== 14)) {
+        res.status(400).json({ error: 'Informe um CPF ou CNPJ válido para gerar a cobrança.' })
+        return
+      }
+
       const customer = await provider.createCustomer({
         name: user.email ?? 'Cliente ShiftPlan',
         email: user.email ?? '',
+        cpfCnpj,
       })
       customerId = customer.customerId
     }

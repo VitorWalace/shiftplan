@@ -20,14 +20,15 @@ export async function getSubscription(): Promise<Subscription> {
 }
 
 /** Calls the serverless checkout route, which talks to Asaas using the secret API key on the server. */
-export async function startProCheckout(): Promise<{ pix: PixCharge | null }> {
+export async function startProCheckout(cpfCnpj: string): Promise<{ pix: PixCharge | null }> {
   const { data: sessionData } = await supabase.auth.getSession()
   const token = sessionData.session?.access_token
   if (!token) throw new Error('Você precisa estar logado para assinar o plano Pro.')
 
   const response = await fetch('/api/billing/checkout', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cpfCnpj }),
   })
 
   if (!response.ok) {

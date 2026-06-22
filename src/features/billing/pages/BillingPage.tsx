@@ -1,4 +1,5 @@
-import { buttonPrimaryClass, buttonSecondaryClass, cardClass } from '../../../components/ui/styles'
+import { useState } from 'react'
+import { buttonPrimaryClass, buttonSecondaryClass, cardClass, inputClass, labelClass } from '../../../components/ui/styles'
 import { useStartProCheckout, useSubscription } from '../hooks'
 
 const STATUS_LABELS_PT: Record<string, string> = {
@@ -10,6 +11,7 @@ const STATUS_LABELS_PT: Record<string, string> = {
 export function BillingPage() {
   const subscriptionQuery = useSubscription()
   const checkout = useStartProCheckout()
+  const [cpfCnpj, setCpfCnpj] = useState('')
 
   if (subscriptionQuery.isLoading) {
     return <p className="text-sm text-muted-500">Carregando assinatura...</p>
@@ -41,11 +43,21 @@ export function BillingPage() {
               O plano <strong>Pro</strong> (R$ 39/mês) libera equipe e escalas ilimitadas, histórico de escalas e
               remove a marca d'água.
             </p>
+            <label className={`${labelClass} mt-3`}>
+              CPF ou CNPJ (necessário pra gerar a cobrança Pix)
+              <input
+                value={cpfCnpj}
+                onChange={(e) => setCpfCnpj(e.target.value)}
+                className={inputClass}
+                placeholder="Só números"
+                inputMode="numeric"
+              />
+            </label>
             <button
               type="button"
               className={`${buttonPrimaryClass} mt-3`}
               disabled={checkout.isPending}
-              onClick={() => checkout.mutate()}
+              onClick={() => checkout.mutate(cpfCnpj)}
             >
               {checkout.isPending ? 'Gerando Pix...' : 'Assinar o plano Pro'}
             </button>
