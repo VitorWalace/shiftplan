@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { buttonDangerClass, buttonPrimaryClass, buttonSecondaryClass, cardClass } from '../../../components/ui/styles'
+import { getErrorMessage } from '../../../lib/errors'
 import { UpgradeModal } from '../../billing/components/UpgradeModal'
 import { usePlan } from '../../billing/usePlan'
 import { AvailabilityGrid } from '../components/AvailabilityGrid'
@@ -73,7 +74,7 @@ export function EmployeesPage() {
                   createEmployee.mutate(input, {
                     onSuccess: () => setFormState({ mode: 'closed' }),
                     onError: (error) => {
-                      if (error instanceof Error && error.message.includes('plano Free')) {
+                      if ((getErrorMessage(error) ?? '').includes('plano Free')) {
                         setFormState({ mode: 'closed' })
                         setShowUpgradeModal(true)
                       }

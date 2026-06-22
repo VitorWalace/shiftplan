@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { DndContext, type DragEndEvent } from '@dnd-kit/core'
 import { Link } from 'react-router-dom'
 import { ToastViewport, useToast } from '../../../components/ui/Toast'
+import { getErrorMessage } from '../../../lib/errors'
 import { useAvailabilities, useEmployees } from '../../employees/hooks'
 import { useShifts } from '../../settings/hooks'
 import { usePlan } from '../../billing/usePlan'
@@ -113,7 +114,7 @@ export function SchedulePage() {
   }
 
   if (scheduleQuery.isError) {
-    const isPlanLimit = scheduleQuery.error instanceof Error && scheduleQuery.error.message.includes('plano Free')
+    const isPlanLimit = (getErrorMessage(scheduleQuery.error) ?? '').includes('plano Free')
     return (
       <div>
         <h1 className="text-xl font-semibold text-muted-900">Escala</h1>
