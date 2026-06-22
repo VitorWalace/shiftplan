@@ -1,7 +1,7 @@
-import { AsaasProvider } from '../_lib/payments/AsaasProvider'
-import { requireUser } from '../_lib/requireUser'
-import { supabaseAdmin } from '../_lib/supabaseAdmin'
-import type { ApiRequest, ApiResponse } from '../_lib/types'
+import { AsaasProvider } from '../_lib/payments/AsaasProvider.js'
+import { requireUser } from '../_lib/requireUser.js'
+import { supabaseAdmin } from '../_lib/supabaseAdmin.js'
+import type { ApiRequest, ApiResponse } from '../_lib/types.js'
 
 const PRO_PLAN_PRICE = 39
 

@@ -1,5 +1,5 @@
-import { supabaseAdmin } from '../_lib/supabaseAdmin'
-import type { ApiRequest, ApiResponse } from '../_lib/types'
+import { supabaseAdmin } from '../_lib/supabaseAdmin.js'
+import type { ApiRequest, ApiResponse } from '../_lib/types.js'
 
 interface AsaasWebhookBody {
   event: string

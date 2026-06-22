@@ -5,7 +5,7 @@ import type {
   CreateSubscriptionResult,
   PaymentProvider,
   SubscriptionStatusResult,
-} from './PaymentProvider'
+} from './PaymentProvider.js'
 
 const ASAAS_API_URL = process.env.ASAAS_API_URL ?? 'https://sandbox.asaas.com/api/v3'
 

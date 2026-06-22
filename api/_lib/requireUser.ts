@@ -1,6 +1,6 @@
 import type { User } from '@supabase/supabase-js'
-import { supabaseAdmin } from './supabaseAdmin'
-import type { ApiRequest } from './types'
+import { supabaseAdmin } from './supabaseAdmin.js'
+import type { ApiRequest } from './types.js'
 
 /** Validates the Supabase access token sent by the client and returns the authenticated user, or null. */
 export async function requireUser(req: ApiRequest): Promise<User | null> {
